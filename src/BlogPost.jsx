@@ -1,11 +1,17 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { blogData } from "./blogData";
+import { useAuth } from "./auth";
 
 function BlogPost() {
   const { slug } = useParams();
   const navigator = useNavigate();
+  const auth = useAuth();
 
   const blogpost = blogData.find((post) => post.slug === slug);
+
+  // pueden eliminar
+  const canDelete =
+    auth.user?.isAdmin || blogpost.author === auth.user?.username;
 
   const returnBlog = () => {
     // navigator("/blog");
@@ -20,6 +26,8 @@ function BlogPost() {
       <h2>{blogpost.title}</h2>
       <i>{blogpost.author}</i>
       <p>{blogpost.content}</p>
+
+      {canDelete && <button>Eliminar Post</button>}
     </>
   );
 }
